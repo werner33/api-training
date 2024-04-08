@@ -15,7 +15,8 @@ app.get('/', function(req, res) {
 });
 
 // set up root route
-app.get('/students', function(req, res) {
+app.get('/users', function(req, res) {
+  const { type } = req.query;
   res.json(studentData);
 });
 
