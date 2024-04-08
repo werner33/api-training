@@ -2,9 +2,9 @@
 
 This is an express app with a react front end. 
 
-1.) Fork and Clone this repo
-2.) CD into users_FE and run npm install && npm run dev
-3.) From the root, npm install && npm start
+1. Fork and Clone this repo
+2. CD into users_FE and run npm install && npm run dev
+3. From the root, npm install && npm start
 
 # Description
 
