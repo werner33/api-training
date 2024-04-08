@@ -1,39 +1,39 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
+import { getUsers } from './backend';
+import UserCard from './UserCard';
+import UserContainer from './UserContainer';
+
 function App() {
-  const [students, setStudents] = useState([]);
-  const [staff, setStaff] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [includeAlumni, setIncludeAlumni] = useState(false);
+  // const [userTypeFilter, setUserTypeFilter] = useState(null);
 
   useEffect(() => {
 
-    fetch('http://localhost:9000/students')
-    .then(res => res.json())
-    .then(data => {
+    const getData = async () => {
+      const data = await getUsers();
+      console.log(data);
+      setUsers(data);
+    }
 
-      const usersWhoAreStaff = data.filter(user => user.role === 'staff');
-      setStaff(usersWhoAreStaff);
-
-      const usersWhoAreStudents = data.filter(user => ['student'].includes(user.role));
-      setStudents(usersWhoAreStudents);
-    })
+    getData();
   }, [])
 
   const includeAlumniWithStudents = () => {
-    fetch('http://localhost:9000/students')
-    .then(res => res.json())
-    .then(data => {
-      const alumni = data.filter(user => user.role === 'alumni');
-
-      const alumniAndStudentsSortedByLastName = [...alumni, ...students].sort((a,b) => {
-        return a.last_name > b.last_name ? 1 : -1;
-      })
-
-      console.log(alumniAndStudentsSortedByLastName);
-
-      setStudents(alumniAndStudentsSortedByLastName);
-    })
+    // setUserTypeFilter("alumni");
+    setIncludeAlumni(!includeAlumni);
   }
+
+  let filterFunc = (user) => user.role === "student";
+  if(includeAlumni) {
+    filterFunc = (user) => user.role === "student" || user.role === "alumni";
+  }
+
+  let usersToRender = users.filter(filterFunc);
+
+  const staff = users.filter(user => user.role === 'staff');
 
   return (
     <div>
@@ -41,15 +41,12 @@ function App() {
         <h1>Student List</h1>
         
         <button className="alumni-btn" onClick={includeAlumniWithStudents}>
-          Include Alumni
+          { includeAlumni ? "Exclude Alumni" : "Include Alumni"}
         </button>
         <div className="student-list__container">
-          {students.map(student => {
+          {usersToRender.map(user => {
             return (
-              <div className="student-card" key={student.id}>
-                <div><span>Name: </span>{student.first_name} {student.last_name} </div>
-                <div><span>Role: </span>{student.role}</div>
-              </div>
+              <UserCard user={user} key={user.id} />
             )
           })}
         </div>
@@ -60,11 +57,8 @@ function App() {
         <div className="staff-list__container">
           {staff.map(staff => {
             return (
-                <div  className="staff-card" key={staff.id}>
-                  <div><span>Name: </span>{staff.first_name} {staff.last_name}</div>
-                  <div><span>Role: </span>{staff.role}</div>
-                </div>
-              );
+              <UserCard user={staff} key={staff.id} />
+            )
           })}
         </div>
       </div>
