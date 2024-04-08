@@ -1,0 +1,31 @@
+
+.student-list, .staff-list {
+  margin: 0 auto;
+  width: 1000px;
+}
+
+.student-list__container, .staff-list__container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+}
+
+.student-card, .staff-card {
+  height: 120px;
+  font-size: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  span {
+    font-weight: bold;
+    padding-right: 15px;
+  }
+
+  & > div {
+    padding: 10px;
+  }
+}
+
+button {
+  padding: 10px;
+  margin: 10px 0;
+}
